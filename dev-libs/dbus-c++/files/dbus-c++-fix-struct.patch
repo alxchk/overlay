@@ -1,0 +1,11 @@
+--- src/message.cpp.orig	2011-11-28 17:03:19.000000000 +0200
++++ src/message.cpp	2015-01-24 21:45:37.026952315 +0200
+@@ -350,7 +350,7 @@
+       (
+         (DBusMessageIter *) & (to._iter),
+         from.type(),
+-        from.type() == DBUS_TYPE_VARIANT ? NULL : sig,
++        (( from.type() == DBUS_TYPE_STRUCT ) || ( from.type() == DBUS_TYPE_DICT_ENTRY )) ? NULL : sig,
+         (DBusMessageIter *) & (to_container._iter)
+       );
+ 

@@ -1,0 +1,11 @@
+DEFINED_PHASES=install prepare unpack
+DEPEND=>=net-wireless/gnuradio-3.7_rc:=[audio,analog,filter] >=net-wireless/gr-osmosdr-0.1.0:= dev-libs/boost:= dev-qt/qtcore:5 dev-qt/qtgui:5 pulseaudio? ( media-sound/pulseaudio:= ) >=dev-vcs/git-1.8.2.1[curl]
+DESCRIPTION=Software defined radio receiver powered by GNU Radio and Qt
+EAPI=5
+HOMEPAGE=http://gqrx.dk/
+IUSE=pulseaudio
+LICENSE=GPL-3
+RDEPEND=>=net-wireless/gnuradio-3.7_rc:=[audio,analog,filter] >=net-wireless/gr-osmosdr-0.1.0:= dev-libs/boost:= dev-qt/qtcore:5 dev-qt/qtgui:5 pulseaudio? ( media-sound/pulseaudio:= ) dev-qt/qtsvg:5
+SLOT=0
+_eclasses_=desktop	b1d22ac8bdd4679ab79c71aca235009d	epatch	a1bf4756dba418a7238f3be0cb010c54	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	6e6c2737b59a4b982de6fb3ecefd87f8	git-r3	0d4635eeb5a96cd5315597a47eba25c9	ltprune	2729691420b6deeda2a90b1f1183fb55	multilib	1d91b03d42ab6308b5f4f6b598ed110e	preserve-libs	ef207dc62baddfddfd39a164d9797648	qmake-utils	bdf97e69a34b864d6d545f4ec3143ff7	toolchain-funcs	8c7f9d80beedd16f2e5a7f612c609529	vcs-clean	2a0f74a496fa2b1552c4f3398258b7bf
+_md5_=876a4d53c6697d1a65f542e645a221c1

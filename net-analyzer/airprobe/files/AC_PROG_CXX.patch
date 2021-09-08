@@ -1,0 +1,55 @@
+diff --git a/gsm-tvoid/configure.ac b/gsm-tvoid/configure.ac
+index ced8f31..65a471e 100644
+--- a/gsm-tvoid/configure.ac
++++ b/gsm-tvoid/configure.ac
+@@ -34,6 +34,7 @@ LF_SET_WARNINGS
+ GR_SET_GPROF
+ GR_SET_PROF
+ GR_PROG_AS
++AC_PROG_CXX
+ AC_PROG_LN_S
+ AC_PROG_MAKE_SET
+ AC_PROG_INSTALL
+diff --git a/gsmsp/configure.in b/gsmsp/configure.in
+index da9f73a..490fce6 100644
+--- a/gsmsp/configure.in
++++ b/gsmsp/configure.in
+@@ -1,6 +1,8 @@
+ 
+ AC_INIT(INSTALL)
+ 
++AC_PROG_CXX
++
+ VER=`cat ${srcdir}/VERSION`
+ AC_MSG_RESULT(Begining autoconfiguration process for gsmsp-$VER...)
+ 
+diff --git a/gsmsp/gsm/configure.ac b/gsmsp/gsm/configure.ac
+index 6b85e01..8acb1de 100644
+--- a/gsmsp/gsm/configure.ac
++++ b/gsmsp/gsm/configure.ac
+@@ -34,6 +34,7 @@ LF_SET_WARNINGS
+ GR_SET_GPROF
+ GR_SET_PROF
+ AM_PROG_AS
++AC_PROG_CXX
+ AC_PROG_LN_S
+ AC_PROG_MAKE_SET
+ AC_PROG_INSTALL
+diff --git a/gssm/configure.ac b/gssm/configure.ac
+index 7ce1181..6a1c23c 100644
+--- a/gssm/configure.ac
++++ b/gssm/configure.ac
+@@ -36,10 +36,13 @@ LF_SET_WARNINGS
+ GR_SET_GPROF
+ GR_SET_PROF
+ GR_PROG_AS
++AC_PROG_CXX
+ AC_PROG_LN_S
+ AC_PROG_MAKE_SET
+ AC_PROG_INSTALL
+ 
++AM_PATH_PYTHON
++
+ AC_LIBTOOL_WIN32_DLL
+ AC_ENABLE_SHARED	dnl do build shared libraries
+ AC_DISABLE_STATIC	dnl don't build static libraries

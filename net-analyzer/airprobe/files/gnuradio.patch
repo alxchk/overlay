@@ -1,0 +1,25 @@
+diff --git a/gsm-receiver/config/gr_standalone.m4 b/gsm-receiver/config/gr_standalone.m4
+index 44d9235..b35a9ec 100644
+--- a/gsm-receiver/config/gr_standalone.m4
++++ b/gsm-receiver/config/gr_standalone.m4
+@@ -114,6 +114,6 @@ m4_define([GR_STANDALONE],
+   AC_CHECK_PROG([XMLTO],[xmlto],[yes],[])
+   AM_CONDITIONAL([HAS_XMLTO], [test x$XMLTO = xyes])
+ 
+-  PKG_CHECK_MODULES(GNURADIO_CORE, gnuradio-core >= 3)
++  PKG_CHECK_MODULES(GNURADIO_CORE, gnuradio-runtime >= 3)
+   LIBS="$LIBS $GNURADIO_CORE_LIBS"
+ ])
+diff --git a/gsm-receiver/gsm-receiver.pc.in b/gsm-receiver/gsm-receiver.pc.in
+index 0a18d4b..9ceca56 100644
+--- a/gsm-receiver/gsm-receiver.pc.in
++++ b/gsm-receiver/gsm-receiver.pc.in
+@@ -5,7 +5,7 @@ includedir=@includedir@
+ 
+ Name: gsm-receiver
+ Description: The GSM receiver block which does FCCH burst search, sch decoding and normal burst demodulation
+-Requires: gnuradio-core
++Requires: gnuradio-runtime
+ Version: @VERSION@
+ Libs: -L${libdir} -lgsm-receiver
+ Cflags: -I${includedir}

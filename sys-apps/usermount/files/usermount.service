@@ -1,0 +1,10 @@
+[Unit]
+Description=Trivial udisks-2 automount
+After=dbus.socket
+Requires=dbus.socket
+
+[Service]
+ExecStart=/usr/bin/usermount
+
+[Install]
+WantedBy=default.target

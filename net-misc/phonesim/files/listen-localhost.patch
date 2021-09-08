@@ -1,0 +1,11 @@
+--- phonesim-9999/src/server.cpp_orig	2021-02-05 17:01:11.125504228 +0200
++++ phonesim-9999/src/server.cpp	2021-02-05 17:02:18.310308364 +0200
+@@ -27,7 +27,7 @@
+ PhoneSimServer::PhoneSimServer(const QString &f, quint16 port, QObject *parent)
+     : QTcpServer(parent), fact(nullptr), currentRules(nullptr)
+ {
+-    listen( QHostAddress::Any, port );
++    listen( QHostAddress::LocalHost, port );
+     filename = f;
+ }
+ 

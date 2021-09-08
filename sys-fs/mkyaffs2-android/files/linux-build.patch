@@ -1,0 +1,34 @@
+diff --git a/yaffs2/utils/Makefile b/yaffs2/utils/Makefile
+index cdd41a7..291b015 100644
+--- a/yaffs2/utils/Makefile
++++ b/yaffs2/utils/Makefile
+@@ -16,7 +16,7 @@
+ 
+ #KERNELDIR = /usr/src/kernel-headers-2.4.18
+ 
+-CFLAGS =   -I/usr/include -I.. -O2 -Wall -DCONFIG_YAFFS_UTIL
++CFLAGS =   -I/usr/include -I.. -O2 -Wall -DCONFIG_YAFFS_UTIL -std=gnu99 -DHAVE_LITTLE_ENDIAN
+ CFLAGS+=   -Wshadow -Wpointer-arith -Wwrite-strings -Wstrict-prototypes -Wmissing-declarations
+ CFLAGS+=   -Wmissing-prototypes -Wredundant-decls -Wnested-externs -Winline
+ 
+diff --git a/yaffs2/utils/mkyaffs2image.c b/yaffs2/utils/mkyaffs2image.c
+index f4e5745..c8bb661 100644
+--- a/yaffs2/utils/mkyaffs2image.c
++++ b/yaffs2/utils/mkyaffs2image.c
+@@ -31,6 +31,7 @@
+ #include <dirent.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <endian.h>
+ 
+ #ifdef HAVE_SELINUX
+ #define XATTR_NAME_SELINUX "security.selinux"
+@@ -42,7 +43,7 @@ static unsigned int seprefixlen;
+ static char *mntpoint;
+ #endif
+ 
+-#include <private/android_filesystem_config.h>
++#include "android_filesystem_config.h"
+ 
+ #include "yaffs_ecc.h"
+ #include "yaffs_guts.h"

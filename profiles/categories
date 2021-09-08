@@ -1,0 +1,5 @@
+cross-x86_64-w64-mingw32
+cross-x86_64-w64-mingw64
+cross-i686-w32-mingw32
+cross-i686-w64-mingw32
+cross-armv7a-hardfloat-linux-gnueabi

@@ -1,0 +1,13 @@
+diff --git a/gsm-receiver/src/lib/decoder/openbtsstuff/GSMCommon.h b/gsm-receiver/src/lib/decoder/openbtsstuff/GSMCommon.h
+index 9dc1c95..8a7fe80 100644
+--- a/gsm-receiver/src/lib/decoder/openbtsstuff/GSMCommon.h
++++ b/gsm-receiver/src/lib/decoder/openbtsstuff/GSMCommon.h
+@@ -34,7 +34,7 @@
+ #include <Timeval.h>
+ #include <BitVector.h>
+ 
+-
++#include <unistd.h>
+ 
+ 
+ namespace GSM {

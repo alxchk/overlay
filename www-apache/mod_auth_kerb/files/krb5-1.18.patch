@@ -1,0 +1,18 @@
+--- ./src/mod_auth_kerb.c.org	2020-08-10 17:36:11.563228638 +0200
++++ ./src/mod_auth_kerb.c	2020-08-10 17:53:14.641734908 +0200
+@@ -2070,12 +2070,11 @@
+    ret = krb5_init_context(&context);
+    if (ret)
+       return 0;
+-
+-   ret = krb5_rc_resolve_full(context, &id, "none:");
++extern krb5_error_code
++    k5_rc_resolve(krb5_context context, const char *name, krb5_rcache *rc_out);
++   ret = k5_rc_resolve(context, "none:", &id);
+    found = (ret == 0);
+ 
+-   if (ret == 0)
+-      krb5_rc_destroy(context, id);
+    krb5_free_context(context);
+ 
+    return found;

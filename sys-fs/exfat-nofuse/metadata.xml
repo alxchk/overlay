@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>alxchk@alxchk.me</email>
+		<name>ExFAT noFuse</name>
+		<description>ExFAT Kernel implementation</description>
+	</maintainer>
+</pkgmetadata>
