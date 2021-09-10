@@ -6,8 +6,8 @@ USE_RUBY="ruby25 ruby26 ruby27 ruby30"
 
 inherit ruby-fakegem
 
-DESCRIPTION="Fast mime detection by extension or content"
-HOMEPAGE="https://ecentryx.com/gems/mime"
+DESCRIPTION="EXtended http(s) CONnections"
+HOMEPAGE="https://rubygems.org/gems/excon"
 
 LICENSE="MIT"
 SLOT="0"

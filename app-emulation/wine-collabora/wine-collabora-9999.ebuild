@@ -6,14 +6,13 @@ EAPI=6
 PLOCALES="ar ast bg ca cs da de el en en_US eo es fa fi fr he hi hr hu it ja ko lt ml nb_NO nl or pa pl pt_BR pt_PT rm ro ru si sk sl sr_RS@cyrillic sr_RS@latin sv ta te th tr uk wa zh_CN zh_TW"
 PLOCALE_BACKUP="en"
 
-inherit autotools eapi7-ver estack eutils flag-o-matic gnome2-utils l10n multilib multilib-minimal pax-utils toolchain-funcs virtualx xdg-utils
+inherit autotools eapi7-ver estack eutils flag-o-matic gnome2-utils plocale multilib multilib-minimal pax-utils toolchain-funcs virtualx xdg-utils
 
 REVISION="f50e3c49783f5f636ce44b4cca526001b2c44049"
 SRC_URI="https://gitlab.collabora.com/alf/wine/-/archive/${REVISION}/wine-${REVISION}.tar.gz"
 
-PV=${REVISION}
 MY_PN="${PN%%-*}"
-MY_P="${MY_PN}-${PV}"
+MY_P="${MY_PN}-${REVISION}"
 
 S="${WORKDIR}/${MY_P}"
 

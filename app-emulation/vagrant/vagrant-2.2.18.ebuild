@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-USE_RUBY="ruby24 ruby25 ruby26"
+USE_RUBY="ruby25 ruby26 ruby27 ruby30"
 
 RUBY_FAKEGEM_EXTRADOC="CHANGELOG.md README.md"
 RUBY_FAKEGEM_GEMSPEC="vagrant.gemspec"
@@ -24,25 +24,26 @@ RESTRICT="test"
 RDEPEND="${RDEPEND}
 	app-arch/libarchive
 	net-misc/curl
-	virtualbox? ( || ( app-emulation/virtualbox app-emulation/virtualbox-bin ) )"
+	virtualbox? ( app-emulation/virtualbox )"
 
 ruby_add_rdepend "
-	>=dev-ruby/bcrypt_pbkdf-1.0.0
-	>=dev-ruby/childprocess-3.0.0
+	>=dev-ruby/bcrypt_pbkdf-1.1
+	>=dev-ruby/childprocess-4.1.0
 	>=dev-ruby/ed25519-1.2.4
-	>=dev-ruby/erubis-2.7.0
+	dev-ruby/erubi
 	>=dev-ruby/hashicorp-checkpoint-0.1.5
 	>=dev-ruby/i18n-1.8:1
-	>=dev-ruby/listen-3.1.5
-	>=dev-ruby/mime-0.4.4
+	>=dev-ruby/listen-3.5
 	<dev-ruby/log4r-1.1.11
-	<dev-ruby/mime-types-3:*
-	>=dev-ruby/net-ssh-5.2.0:*
-	>=dev-ruby/net-sftp-2.1
-	>=dev-ruby/net-scp-1.2.0
+	>dev-ruby/mime-types-3.3
+	>=dev-ruby/net-ssh-6.1.0
+	>=dev-ruby/net-sftp-3.0
+	>=dev-ruby/net-scp-3.0
+	>=dev-ruby/rexml-3.2
 	dev-ruby/rest-client:2
 	dev-ruby/rubyzip:2
-	>=dev-ruby/vagrant_cloud-2.0.3
+	>=dev-ruby/vagrant_cloud-3.0.5
+	>=dev-ruby/wdm-0.1.1
 "
 
 # upstream specifies rake>=12 but it apparently doesn't need something this
@@ -51,6 +52,7 @@ ruby_add_rdepend "
 # able to stabilize vagrant sooner.
 ruby_add_bdepend "
 	>=dev-ruby/rake-10.5.0
+	>=dev-ruby/rubygems-1.3.6
 "
 
 all_ruby_prepare() {

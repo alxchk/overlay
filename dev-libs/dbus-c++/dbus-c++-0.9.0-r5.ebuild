@@ -30,7 +30,7 @@ S="${WORKDIR}/lib${P}"
 PATCHES=(
 	"${FILESDIR}"/${P}-gcc-4.7.patch #424707
 	"${FILESDIR}"/${PN}-gcc7.patch #622790
-	"${FILESDIR}"/${P}-fix-struct.patch
+	"${FILESDIR}"/${PN}-fix-struct.patch
 )
 
 multilib_src_configure() {

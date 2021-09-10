@@ -6,12 +6,13 @@ USE_RUBY="ruby25 ruby26 ruby27 ruby30"
 
 inherit ruby-fakegem
 
-DESCRIPTION="Fast mime detection by extension or content"
-HOMEPAGE="https://ecentryx.com/gems/mime"
+DESCRIPTION="Gyoku translates Ruby Hashes to XML"
+HOMEPAGE="https://rubygems.org/gems/gyoku"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE=""
 
+ruby_add_rdepend ">=dev-ruby/builder-2.1.2"
 ruby_add_bdepend "test? ( dev-ruby/minitest )"
