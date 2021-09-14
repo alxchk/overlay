@@ -1,0 +1,26 @@
+From e6a9191e37ec4ddbab9409b86d7b2db2cef6d88e Mon Sep 17 00:00:00 2001
+From: "System user; root" <alxchk@gmail.com>
+Date: Tue, 14 Sep 2021 15:35:22 +0300
+Subject: [PATCH 3/3] Add missing files for autoreconf-2.71
+
+---
+ AUTHORS   | 0
+ ChangeLog | 0
+ NEWS      | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 AUTHORS
+ create mode 100644 ChangeLog
+ create mode 100644 NEWS
+
+diff --git a/AUTHORS b/AUTHORS
+new file mode 100644
+index 0000000..e69de29
+diff --git a/ChangeLog b/ChangeLog
+new file mode 100644
+index 0000000..e69de29
+diff --git a/NEWS b/NEWS
+new file mode 100644
+index 0000000..e69de29
+-- 
+2.33.0
+

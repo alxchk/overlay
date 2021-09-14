@@ -1,0 +1,188 @@
+From 88dc84f25e7e35d0aebafadf24784f127ae46858 Mon Sep 17 00:00:00 2001
+From: "System user; root" <alxchk@gmail.com>
+Date: Tue, 14 Sep 2021 15:27:44 +0300
+Subject: [PATCH 2/3] Add support for well-known zeroed key
+
+---
+ src/create_tpm_key.c | 36 +++++++++++++++++++++++++++---------
+ src/e_tpm.c          | 34 +++++++++++++++++++++++++++-------
+ 2 files changed, 54 insertions(+), 16 deletions(-)
+
+diff --git a/src/create_tpm_key.c b/src/create_tpm_key.c
+index a73d549..66d3c3f 100644
+--- a/src/create_tpm_key.c
++++ b/src/create_tpm_key.c
+@@ -57,6 +57,7 @@ static struct option long_options[] = {
+ 	{"sig-scheme", 1, 0, 'q'},
+ 	{"key-size", 1, 0, 's'},
+ 	{"auth", 0, 0, 'a'},
++	{"zero", 0, 0, 'z'},
+ 	{"popup", 0, 0, 'p'},
+ 	{"wrap", 1, 0, 'w'},
+ 	{"help", 0, 0, 'h'},
+@@ -73,6 +74,7 @@ usage(char *argv0)
+ 		"\t\t-q|--sig-scheme  signature scheme to use [DER] or SHA1\n"
+ 		"\t\t-s|--key-size    key size in bits [2048]\n"
+ 		"\t\t-a|--auth        require a password for the key [NO]\n"
++		"\t\t-z|--zero        SRK is wellknown secret [NO]\n"
+ 		"\t\t-p|--popup       use TSS GUI popup dialogs to get the password "
+ 		"for the\n\t\t\t\t key [NO] (implies --auth)\n"
+ 		"\t\t-w|--wrap [file] wrap an existing openssl PEM key\n"
+@@ -157,11 +159,12 @@ int main(int argc, char **argv)
+ 	UINT32		enc_scheme = TSS_ES_RSAESPKCSV15;
+ 	UINT32		sig_scheme = TSS_SS_RSASSAPKCS1V15_DER;
+ 	UINT32		key_size = 2048;
++	UINT32		srk_well_known = 0;
+ 	RSA		*rsa;
+ 
+ 	while (1) {
+ 		option_index = 0;
+-		c = getopt_long(argc, argv, "pe:q:s:ahw:",
++		c = getopt_long(argc, argv, "pe:q:s:ahw:z",
+ 				long_options, &option_index);
+ 		if (c == -1)
+ 			break;
+@@ -177,6 +180,9 @@ int main(int argc, char **argv)
+ 			case 's':
+ 				key_size = atoi(optarg);
+ 				break;
++			case 'z':
++				srk_well_known = 1;
++				break;
+ 			case 'e':
+ 				if (!strncasecmp("oaep", optarg, 4)) {
+ 					enc_scheme = TSS_ES_RSAESOAEP_SHA1_MGF1;
+@@ -300,6 +306,8 @@ int main(int argc, char **argv)
+ 
+ 	if (srk_authusage) {
+ 		char *authdata = calloc(1, 128);
++		UINT32 authsize;
++		UINT32 srk_mode;
+ 
+ 		if (!authdata) {
+ 			fprintf(stderr, "malloc failed.\n");
+@@ -316,18 +324,28 @@ int main(int argc, char **argv)
+ 			exit(result);
+ 		}
+ 
+-		if (EVP_read_pw_string(authdata, 128, "SRK Password: ", 0)) {
+-			Tspi_Context_CloseObject(hContext, hKey);
+-			Tspi_Context_Close(hContext);
+-			free(authdata);
+-			exit(result);
++		if (!srk_well_known) {
++			if (EVP_read_pw_string(authdata, 128, "SRK Password: ", 0)) {
++				Tspi_Context_CloseObject(hContext, hKey);
++				Tspi_Context_Close(hContext);
++				free(authdata);
++				exit(result);
++			}
++
++			srk_mode = TSS_SECRET_MODE_PLAIN;
++			authsize = strlen(authdata);
++		} else {
++			BYTE well_known_secret[] = TSS_WELL_KNOWN_SECRET;
++			srk_mode = TSS_SECRET_MODE_SHA1;
++			authsize = sizeof(well_known_secret);
++			memcpy(authdata, well_known_secret, authsize);
+ 		}
+ 
+ 		//Set Secret
+ 		if ((result = Tspi_Policy_SetSecret(srkUsagePolicy,
+-						    TSS_SECRET_MODE_PLAIN,
+-						    strlen(authdata),
+-						    (BYTE *)authdata))) {
++						    srk_mode,
++						    authsize,
++						    authdata))) {
+ 			print_error("Tspi_Policy_SetSecret", result);
+ 			free(authdata);
+ 			Tspi_Context_Close(hContext);
+diff --git a/src/e_tpm.c b/src/e_tpm.c
+index f671771..72f1bba 100644
+--- a/src/e_tpm.c
++++ b/src/e_tpm.c
+@@ -72,6 +72,7 @@ static RAND_SEED_RET_TYPE tpm_rand_seed(const void *, int);
+ #define TPM_CMD_SO_PATH		ENGINE_CMD_BASE
+ #define TPM_CMD_PIN		ENGINE_CMD_BASE+1
+ #define TPM_CMD_SECRET_MODE	ENGINE_CMD_BASE+2
++#define TPM_CMD_SRK_WELL_KNOWN	ENGINE_CMD_BASE+3
+ static const ENGINE_CMD_DEFN tpm_cmd_defns[] = {
+ 	{TPM_CMD_SO_PATH,
+ 	 "SO_PATH",
+@@ -85,6 +86,10 @@ static const ENGINE_CMD_DEFN tpm_cmd_defns[] = {
+ 	 "SECRET_MODE",
+ 	 "The TSS secret mode for all secrets",
+ 	 ENGINE_CMD_FLAG_NUMERIC},
++	{TPM_CMD_SRK_WELL_KNOWN,
++	 "SRK_WELL_KNOWN",
++	 "The TSS SRK key is well known",
++	 ENGINE_CMD_FLAG_NUMERIC},
+ 	{0, NULL, NULL, 0}
+ };
+ 
+@@ -112,6 +117,7 @@ static TSS_HPOLICY  hSRKPolicy  = NULL_HPOLICY;
+ static TSS_HTPM     hTPM        = NULL_HTPM;
+ static TSS_UUID     SRK_UUID    = TSS_UUID_SRK;
+ static UINT32       secret_mode = TSS_SECRET_MODE_PLAIN;
++static UINT32       srk_zeroed  = 0;
+ 
+ /* varibles used to get/set CRYPTO_EX_DATA values */
+ int  ex_app_data = TPM_ENGINE_EX_DATA_UNINIT;
+@@ -262,6 +268,9 @@ int tpm_load_srk(UI_METHOD *ui, void *cb_data)
+ 	TSS_RESULT result;
+ 	UINT32 authusage;
+ 	BYTE *auth;
++	UINT32 auth_size;
++	UINT32 srk_secret_mode = secret_mode;
++	BYTE well_known_secret[] = TSS_WELL_KNOWN_SECRET;
+ 
+ 	if (hSRK != NULL_HKEY) {
+ 		DBGFN("SRK is already loaded.");
+@@ -313,18 +322,26 @@ int tpm_load_srk(UI_METHOD *ui, void *cb_data)
+ 		return 0;
+ 	}
+ 
+-	if (!tpm_engine_get_auth(ui, (char *)auth, 128, "SRK authorization: ",
++	if (!srk_zeroed) {
++	    if (!tpm_engine_get_auth(ui, (char *)auth, 128, "SRK authorization: ",
+ 				cb_data)) {
+-		Tspi_Context_CloseObject(hContext, hSRK);
+-		free(auth);
+-		TSSerr(TPM_F_TPM_LOAD_SRK, TPM_R_REQUEST_FAILED);
+-		return 0;
++		    Tspi_Context_CloseObject(hContext, hSRK);
++		    free(auth);
++		    TSSerr(TPM_F_TPM_LOAD_SRK, TPM_R_REQUEST_FAILED);
++		    return 0;
++	    }
++
++	    auth_size = strlen((char *)auth);
++	} else {
++	    auth_size = sizeof(well_known_secret);
++	    memcpy(auth, well_known_secret, auth_size);
++	    srk_secret_mode = TSS_SECRET_MODE_SHA1;
+ 	}
+ 
+ 	/* secret_mode is a global that may be set by engine ctrl
+ 	 * commands.  By default, its set to TSS_SECRET_MODE_PLAIN */
+-	if ((result = Tspi_Policy_SetSecret(hSRKPolicy, secret_mode,
+-					      strlen((char *)auth), auth))) {
++	if ((result = Tspi_Policy_SetSecret(hSRKPolicy, srk_secret_mode,
++					      auth_size, auth))) {
+ 		Tspi_Context_CloseObject(hContext, hSRK);
+ 		free(auth);
+ 		TSSerr(TPM_F_TPM_LOAD_SRK, TPM_R_REQUEST_FAILED);
+@@ -797,6 +814,9 @@ static int tpm_engine_ctrl(ENGINE * e, int cmd, long i, void *p, void (*f) ())
+ 					break;
+ 			}
+ 			return 1;
++		case TPM_CMD_SRK_WELL_KNOWN:
++			srk_zeroed = (UINT32)i;
++			return 1;
+ 		case TPM_CMD_PIN:
+ 			return tpm_create_srk_policy(p);
+ 		default:
+-- 
+2.33.0
+
