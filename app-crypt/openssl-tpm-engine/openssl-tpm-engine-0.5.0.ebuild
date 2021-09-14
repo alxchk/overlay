@@ -10,6 +10,11 @@ KEYWORDS="~x86 ~amd64"
 
 S="${WORKDIR}/openssl_tpm_engine-${PV}"
 
+DEPEND="
+dev-libs/openssl
+app-crypt/trousers
+"
+
 PATCHES=(
     "${FILESDIR}"/0001-Update-configure.ac-to-more-recent-format.patch
     "${FILESDIR}"/0002-Add-support-for-well-known-zeroed-key.patch
@@ -21,4 +26,3 @@ src_prepare() {
     eapply_user
     eautoreconf -i
 }
-
